@@ -90,7 +90,7 @@ if func == 'install'
     File.delete '.path'
     puts "\e[33;1mYou may want to add '/var/ruby_pkg/packages/bin' to your PATH.\e[0m" unless path.include? '/var/ruby_pkg/packages/bin'
 elsif func == 'remove'
-    puts 'hi'
+    puts 'Unimplemented.'
 elsif func == 'place'
     puts "\e[32;1mPlacing...\e[0m"
     puts "\e[34;1m- Creating directories...\e[0m"
