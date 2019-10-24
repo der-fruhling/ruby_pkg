@@ -8,3 +8,7 @@
 An explanation on how to use ruby_pkg can be found in [this site](http://liamcoal.github.io/ruby_pkg/usage)
 
 ## How do i build the gem
+```bash
+gem build ruby_pkg.gemspec
+sudo gem install ruby_pkg-VER.gem
+```
