@@ -3,7 +3,7 @@ require 'fileutils'
 
 def work(argv)
     if argv[1].nil?
-        puts "Usage: ./ruby_pkg <install|remove|--help> <package>"
+        puts "Usage: ruby_pkg <install|remove|--help> <package>"
         fail
     end
 
@@ -86,7 +86,7 @@ def work(argv)
         system "sudo tar -#{compress_char}tf .tmp > #{@index['pkg_dirs']['outside'] + "/#{pkgname}.pkg_listing"}"
         FileUtils.rm '.tmp'
         Dir.chdir '..'
-        system 'sudo ./ruby_pkg place tmp'
+        system 'sudo ruby_pkg place tmp'
         FileUtils.rm_r 'tmp'
         puts "\e[34;1mDone.\e[0m"
         system 'echo $PATH > .path'
@@ -96,7 +96,7 @@ def work(argv)
     elsif func == 'remove'
         puts "\e[33;1mThis program now requires sudo privledges.\e[0m"
         puts "\e[32;1mYou will be kept up to date on whats happening.\e[0m"
-        system "sudo ./ruby_pkg unplace #{@file}"
+        system "sudo ruby_pkg unplace #{@file}"
     elsif func == 'place'
         puts "\e[32;1mPlacing...\e[0m"
         puts "\e[34;1m- Creating directories...\e[0m"

@@ -6,3 +6,5 @@
 
 ## How do you use it?
 An explanation on how to use ruby_pkg can be found in [this site](http://liamcoal.github.io/ruby_pkg/usage)
+
+## How do i build the gem

@@ -5,4 +5,4 @@ require 'ruby_pkg'
 s = ''
 
 ARGV.each { |arg| s += "#{arg} " } unless ARGV.nil?
-work(s)
+work(s.split ' ')
