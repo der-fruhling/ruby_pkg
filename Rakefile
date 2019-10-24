@@ -20,3 +20,4 @@ end
 
 task :cprepo do
     system 'sudo cp pkgrepo /var/ruby_pkg/'
+end
