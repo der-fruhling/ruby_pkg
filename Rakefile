@@ -6,7 +6,9 @@ task :spec do
     system 'gem build ruby_pkg.gemspec'
 end
 
-task :install => :spec do
+task :install do
+    system 'rm -rf *.gem'
+    system 'rake'
     system 'sudo gem install ruby_pkg-*.gem'
 end
 

@@ -13,12 +13,14 @@ def work(argv)
     func = argv[0]
 
     if func == '--help'
-        puts "----------------- ruby_pkg ----------------
+        puts %q{
+----------------- ruby_pkg ----------------
 This file is merely a stub.
 For the real help, see:
 
 http://liamcoal.github.io/ruby_pkg/easyhelp
--------------------------------------------"
+-------------------------------------------
+}
         exit 1
     end
 
@@ -89,11 +91,23 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
         compress_char = 'z' if @usegz
         Dir.chdir 'tmp'
         system "tar -#{compress_char}xf .tmp"
+        if File.exist? 'Makefile'
+            puts "\e[32;1mRunning make...\e[0m"
+            system "make"
+        end
+        if File.exist? 'Rakefile'
+            puts "\e[32;1mRunning rake...\e[0m"
+            system "rake"
+        end
         puts "\e[33;1mThis program now requires sudo privledges.\e[0m"
         puts "\e[32;1mYou will be kept up to date on whats happening.\e[0m"
         pkgname = @file.split('/')
         pkgname = pkgname[pkgname.size - 1].split('.')[0]
         system "sudo tar -#{compress_char}tf .tmp > #{@index['pkg_dirs']['outside'] + "/#{pkgname}.pkg_listing"}"
+        unless File.exist? "#{@index['pkg_dirs']['outside'] + "/#{pkgname}.pkg_listing"}"
+            puts "\e[31;1mListing was not created!\nRerun with sudo.\e[0m"
+            fail
+        end
         FileUtils.rm '.tmp'
         Dir.chdir '..'
         system 'sudo ruby_pkg place tmp'
@@ -114,26 +128,37 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
         Dir.mkdir @index['pkg_dirs']['outside'] unless Dir.exist? @index['pkg_dirs']['outside']
         puts "\e[34;1m- Copying files to directories \e[32;1m#{@index['pkg_dirs']['outside'] + "/*"}\e[0m"
         puts "\e[33;1m  * tmp/bin => #{@index['pkg_dirs']['outside'] + "/bin"}"
-        FileUtils.cp_r 'tmp/bin', @index['pkg_dirs']['outside'] + "/bin"
+        FileUtils.cp_r 'tmp/bin', @index['pkg_dirs']['outside']
         puts "\e[33;1m  * tmp/lib => #{@index['pkg_dirs']['outside'] + "/lib"}"
-        FileUtils.cp_r 'tmp/lib', @index['pkg_dirs']['outside'] + "/lib"
+        FileUtils.cp_r 'tmp/lib', @index['pkg_dirs']['outside']
     elsif func == 'unplace'
         puts "\e[32;1mUnplacing (removing)...\e[0m"
         puts "\e[34;1m- Reading file list."
         filelist = File.read @index['pkg_dirs']['outside'] + "/#{@file}.pkg_listing"
         puts filelist
+        @problem = nil
         filelist.each_line do |line|
             if line.include? '.'
                 print "\e[31;1m  * Removing #{@file}:#{line.chomp} "
                 a = line
                 a = a.gsub 'bin/', @index['pkg_dirs']['outside'] + "/bin/"
                 a = a.gsub 'lib/', @index['pkg_dirs']['outside'] + "/lib/"
-                puts "(#{a.chomp})\e[0m"
-                FileUtils.rm_r a.chomp
+                print "(#{a.chomp})"
+                unless File.exist? a.chomp
+                    print ' already deleted or never existed.'
+                    @problem = 'A file never existed or was already deleted.'
+                else
+                    FileUtils.rm_r a.chomp
+                end
+                puts "\e[0m"
             end
         end
     else
         puts "Invalid function: #{func}"
         fail
     end
+end
+
+unless @problem.nil?
+    puts "\e[33;1mThere may be a problem:\n\n#{@problem}\e[0m"
 end

@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["liam@liamiam.com"]
 
   spec.summary       = %q{Simple ruby package installer/remover for linux/macos}
+  spec.description   = %Q{#{RubyPkg::DESC}\n\nWhat's new:\n#{RubyPkg::WHATS_NEW}}
   spec.homepage      = "https://github.com/liamcoal/ruby_pkg"
 
   # Specify which files should be added to the gem when it is released.
