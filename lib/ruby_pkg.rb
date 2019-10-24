@@ -33,6 +33,7 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
     @fromurl = false
     @srv = psrv
     @file = nil
+    @fromrepo = false
 
     argv[1..].each do |arg|
         if arg.start_with? '-'
@@ -54,6 +55,8 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                 end
             when 'g'
                 @usegz = true
+            when 'r'
+                @fromrepo = true
             else
                 puts "Invalid option: #{arg}"
             end
@@ -83,9 +86,12 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
             f = open url
             File.write 'tmp/.tmp', f.read
         else
-            FileUtils.cp @file, 'tmp/.tmp'
+            if @fromrepo
+                FileUtils.cp "#{@index['local_pkg_repo']}/#{@file}", 'tmp/.tmp'
+            else
+                FileUtils.cp @file, 'tmp/.tmp'
+            end
         end
-
         puts "\e[32;1mExtracting...\e[0m"
         compress_char = 'J'
         compress_char = 'z' if @usegz
@@ -153,6 +159,8 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                 puts "\e[0m"
             end
         end
+    elsif func == 'add_pkg'
+        
     else
         puts "Invalid function: #{func}"
         fail

@@ -17,3 +17,6 @@ task :publish do
     system 'rake'
     system "gem push --key github --host https://rubygems.pkg.github.com/LiamCoal ruby_pkg-*.gem"
 end
+
+task :cprepo do
+    system 'sudo cp pkgrepo /var/ruby_pkg/'

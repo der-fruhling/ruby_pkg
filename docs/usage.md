@@ -20,18 +20,20 @@ ruby_pkg --help
 ### install
 Usage:
 ```bash
-ruby_pkg install [-u (provides -s)] [-surl_service] [-g] <package>
+ruby_pkg install [-u (provides -s)] [-surl_service] [-g] [-r] <package>
 ```
 
 #### Options
 * *-u* This package is going to be from a **URL**, not **local**.
 * *-s* The service to be used for url instalation. *-u* is required for this option to have effect.
 * *-g* Use **tgz**, not **txz**
+* *-r* Get the file from the local package repo (*index.json*[local_pkg_repo])
 
 #### Rules
 1. If *-u* is not specified, install locally.
 2. If *-u* is specified, install from url only.
 3. Dont mix up **tgz** and **txz**. They are different.
+4. *-r* has no effect if *-u* is specified.
 
 #### Example
 ```bash

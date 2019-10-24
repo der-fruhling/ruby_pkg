@@ -1,5 +1,4 @@
 {
-    "version": "1.0",
     "services": {
         "primary": "https://raw.githubusercontent.com/LiamCoal/ruby_pkg/master/packages"
     },
@@ -7,5 +6,6 @@
         "inside": ".",
         "outside": "/var/ruby_pkg/packages"
     },
-    "mkdirs_noexist": ["/var/ruby_pkg"]
+    "mkdirs_noexist": ["/var/ruby_pkg"],
+    "local_pkg_repo": "/var/ruby_pkg/pkgrepo"
 }
