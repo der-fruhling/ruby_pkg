@@ -35,7 +35,13 @@ ruby_pkg install [-u (provides -s)] [-surl_service] [-g] <package>
 
 #### Example
 ```bash
-./ruby_pkg install hello-world.tar.xz
+# Local
+./ruby_pkg install packages/hello-world.tar.xz
+
+# From this repo
+./ruby_pkg install -u hello-world
+# does the same as
+./ruby_pkg install -u -sprimary hello-world
 ```
 
 ### remove
