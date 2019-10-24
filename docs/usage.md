@@ -6,7 +6,7 @@
 
 ## Command usage
 ```bash
-ruby_pkg <install|remove|--help>
+ruby_pkg <install|remove|place|unplace|--help>
 ```
 
 ### --help
@@ -50,4 +50,36 @@ ruby_pkg remove <package>
 #### Example
 ```bash
 ./ruby_pkg remove hello-world
+```
+
+### place
+*This command is internal or for debugging package installing.*  
+Usage:
+```bash
+ruby_pkg place <directory>
+```
+
+#### Rules
+1. *directory* is expected to exist and be a directory.
+2. **sudo is required**
+
+#### Example
+```bash
+sudo ./ruby_pkg place hello-world
+```
+
+### unplace
+*This command is internal and only exists as an alternative to using remove*  
+Usage:
+```bash
+ruby_pkg unplace <package>
+```
+
+#### Rules
+1. `pkg_dirs['outside']/package.pkg_listing` must exist.
+2. **sudo is required**
+
+#### Example
+```bash
+sudo ./ruby_pkg unplace hello-world
 ```

@@ -78,10 +78,13 @@ if func == 'install'
     compress_char = 'z' if @usegz
     Dir.chdir 'tmp'
     system "tar -#{compress_char}xf .tmp"
-    FileUtils.rm '.tmp'
-    Dir.chdir '..'
     puts "\e[33;1mThis program now requires sudo privledges.\e[0m"
     puts "\e[32;1mYou will be kept up to date on whats happening.\e[0m"
+    pkgname = @file.split('/')
+    pkgname = pkgname[pkgname.size - 1].split('.')[0]
+    system "sudo tar -#{compress_char}tf .tmp > #{@index['pkg_dirs']['outside'] + "/#{pkgname}.pkg_listing"}"
+    FileUtils.rm '.tmp'
+    Dir.chdir '..'
     system 'sudo ./ruby_pkg place tmp'
     FileUtils.rm_r 'tmp'
     puts "\e[34;1mDone.\e[0m"
@@ -90,7 +93,9 @@ if func == 'install'
     File.delete '.path'
     puts "\e[33;1mYou may want to add '/var/ruby_pkg/packages/bin' to your PATH.\e[0m" unless path.include? '/var/ruby_pkg/packages/bin'
 elsif func == 'remove'
-    puts 'Unimplemented.'
+    puts "\e[33;1mThis program now requires sudo privledges.\e[0m"
+    puts "\e[32;1mYou will be kept up to date on whats happening.\e[0m"
+    system "sudo ./ruby_pkg unplace #{@file}"
 elsif func == 'place'
     puts "\e[32;1mPlacing...\e[0m"
     puts "\e[34;1m- Creating directories...\e[0m"
@@ -101,6 +106,21 @@ elsif func == 'place'
     FileUtils.cp_r 'tmp/bin', @index['pkg_dirs']['outside'] + "/bin"
     puts "\e[33;1m  * tmp/lib => #{@index['pkg_dirs']['outside'] + "/lib"}"
     FileUtils.cp_r 'tmp/lib', @index['pkg_dirs']['outside'] + "/lib"
+elsif func == 'unplace'
+    puts "\e[32;1mUnplacing (removing)...\e[0m"
+    puts "\e[34;1m- Reading file list."
+    filelist = File.read @index['pkg_dirs']['outside'] + "/#{@file}.pkg_listing"
+    puts filelist
+    filelist.each_line do |line|
+        if line.include? '.'
+            print "\e[31;1m  * Removing #{@file}:#{line.chomp} "
+            a = line
+            a = a.gsub 'bin/', @index['pkg_dirs']['outside'] + "/bin/"
+            a = a.gsub 'lib/', @index['pkg_dirs']['outside'] + "/lib/"
+            puts "(#{a.chomp})\e[0m"
+            FileUtils.rm_r a.chomp
+        end
+    end
 else
     puts "Invalid function: #{func}"
     fail
