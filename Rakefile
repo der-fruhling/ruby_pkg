@@ -10,6 +10,8 @@ task :install => :spec do
     system 'sudo gem install ruby_pkg-*.gem'
 end
 
-task :publish => :spec do
+task :publish do
+    system 'rm -rf *.gem'
+    system 'rake'
     system "gem push --key github --host https://rubygems.pkg.github.com/LiamCoal ruby_pkg-*.gem"
 end
