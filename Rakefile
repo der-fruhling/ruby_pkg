@@ -7,9 +7,9 @@ task :spec do
 end
 
 task :install => :spec do
-    system 'sudo gem install ruby_pkg-?.?.gem'
+    system 'sudo gem install ruby_pkg-*.gem'
 end
 
 task :publish => :spec do
-    system "gem push --key github --host https://rubygems.pkg.github.com/LiamCoal ruby_pkg-?.?.gem"
+    system "gem push --key github --host https://rubygems.pkg.github.com/LiamCoal ruby_pkg-*.gem"
 end
