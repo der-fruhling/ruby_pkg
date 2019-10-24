@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+s = ''
+
+ARGV.each { |arg| s += "#{arg} " } unless ARGV.nil?
+system "ruby -I. ruby_pkg.rb #{s}"

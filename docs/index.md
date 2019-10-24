@@ -4,3 +4,4 @@
 
 ## Pages:
 1. [Usage of commands](usage.md)
+2. [Easy help](easyhelp.md) *Not written*
