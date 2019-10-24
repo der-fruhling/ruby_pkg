@@ -7,7 +7,5 @@
         "inside": ".",
         "outside": "/var/ruby_pkg/packages"
     },
-    "bin_dir": "/usr/bin",
-    "lib_dir": "/usr/lib",
     "mkdirs_noexist": ["/var/ruby_pkg"]
 }
