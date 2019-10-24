@@ -1,6 +1,0 @@
------------- ruby_pkg ------------
-This file is merely a stub.
-For the real help, see:
-
-http://liamcoal.github.io/easyhelp
-----------------------------------

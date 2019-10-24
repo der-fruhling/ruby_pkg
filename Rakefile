@@ -1,2 +1,15 @@
 require "bundler/gem_tasks"
 task :default => :spec
+
+task :spec do
+    system 'bundle'
+    system 'gem build ruby_pkg.gemspec'
+end
+
+task :install => :spec do
+    system 'sudo gem install ruby_pkg-?.?.gem'
+end
+
+task :publish => :spec do
+    system "gem push --key github --host https://rubygems.pkg.github.com/LiamCoal ruby_pkg-?.?.gem"
+end

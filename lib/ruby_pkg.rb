@@ -2,7 +2,7 @@ require 'json'
 require 'fileutils'
 
 def work(argv)
-    if argv[1].nil?
+    if argv[0].nil?
         puts "Usage: ruby_pkg <install|remove|--help> <package>"
         fail
     end
@@ -13,8 +13,18 @@ def work(argv)
     func = argv[0]
 
     if func == '--help'
-        puts File.read('help.txt')
+        puts "----------------- ruby_pkg ----------------
+This file is merely a stub.
+For the real help, see:
+
+http://liamcoal.github.io/ruby_pkg/easyhelp
+-------------------------------------------"
         exit 1
+    end
+
+    if argv[1].nil?
+        puts "Usage: ruby_pkg <install|remove|--help> <package>"
+        fail
     end
 
     @usegz = false
