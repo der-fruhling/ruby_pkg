@@ -15,11 +15,18 @@ DEFAULT_CONFIG = {
 
 def work(argv)
     if argv[0].nil?
-        puts "Usage: ruby_pkg <install|remove|--help> <package>"
+        puts "Usage: ruby_pkg <install|remove|reset|--help> <package>"
         fail
     end
 
+    if argv[0] == 'reset'
+        require 'fileutils'
+        FileUtils.rm_r '/var/ruby_pkg'
+        exit 0
+    end
+
     Dir.mkdir '/var/ruby_pkg' unless Dir.exist? '/var/ruby_pkg'
+    Dir.mkdir '/var/ruby_pkg/packages' unless Dir.exist? '/var/ruby_pkg/packages'
     File.write '/var/ruby_pkg/index.json', JSON.pretty_generate(DEFAULT_CONFIG) unless File.exist? '/var/ruby_pkg/index.json'
     @index = JSON.parse File.read('/var/ruby_pkg/index.json')
     psrv = @index['services']['primary']
@@ -157,10 +164,6 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
         system 'sudo ruby_pkg place tmp'
         FileUtils.rm_r 'tmp'
         puts "\e[34;1mDone.\e[0m"
-        system 'echo $PATH > .path'
-        path = File.read '.path'
-        File.delete '.path'
-        puts "\e[33;1mYou may want to add '/var/ruby_pkg/packages/bin' to your PATH.\e[0m" unless path.include? '/var/ruby_pkg/packages/bin'
     elsif func == 'remove'
         puts "\e[33;1mThis program now requires sudo privledges.\e[0m"
         puts "\e[32;1mYou will be kept up to date on whats happening.\e[0m"
@@ -197,8 +200,8 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                 puts "\e[0m"
             end
         end
-    elsif func == 'add_pkg'
-        
+    elsif func == 'run'
+        system "ruby /var/ruby_pkg/packages/bin/#{@file}.rb"
     else
         puts "Invalid function: #{func}"
         fail
