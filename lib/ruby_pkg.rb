@@ -1,13 +1,27 @@
 require 'json'
 require 'fileutils'
 
+DEFAULT_CONFIG = {
+    "services" => {
+        "primary" => "https://raw.githubusercontent.com/LiamCoal/ruby_pkg/master/pkgrepo"
+    },
+    "pkg_dirs" => {
+        "inside" => ".",
+        "outside" => "/var/ruby_pkg/packages"
+    },
+    "mkdirs_noexist" => ["/var/ruby_pkg"],
+    "local_pkg_repo" => "/var/ruby_pkg/pkgrepo"
+}.freeze
+
 def work(argv)
     if argv[0].nil?
         puts "Usage: ruby_pkg <install|remove|--help> <package>"
         fail
     end
 
-    @index = JSON.parse File.read('index.json')
+    Dir.mkdir '/var/ruby_pkg' unless Dir.exist? '/var/ruby_pkg'
+    File.write '/var/ruby_pkg/index.json', JSON.pretty_generate(DEFAULT_CONFIG) unless File.exist? '/var/ruby_pkg/index.json'
+    @index = JSON.parse File.read('/var/ruby_pkg/index.json')
     psrv = @index['services']['primary']
 
     func = argv[0]
@@ -34,6 +48,7 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
     @srv = psrv
     @file = nil
     @fromrepo = false
+    @from_dedicated_server = false
 
     argv[1..(argv.size-1)].each do |arg|
         if arg.start_with? '-'
@@ -57,6 +72,8 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                 @usegz = true
             when 'r'
                 @fromrepo = true
+            when 'S'
+                @from_dedicated_server = true
             else
                 puts "Invalid option: #{arg}"
             end
@@ -85,6 +102,27 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
             puts "\e[34;1m- Getting #{url}"
             f = open url
             File.write 'tmp/.tmp', f.read
+        elsif @from_dedicated_server
+            require 'socket'
+            require 'base64'
+            puts "\e[33;1mUsing experimental server!\e[0m"
+            unless @srv['dedicated_server'] == true
+                fail 'Invalid server. (NOT_DED_SERVER)'
+            end
+            socket = TCPSocket.new @srv
+            puts "\e[33;1mSeeing if package exists on server...\e[0m"
+            socket.puts "exists #{@file}"
+            filenum = 0
+            exists = socket.gets
+            if exists == 'no'
+                fail 'Package does not exist. (PKG_NO_EXIST)'
+            else
+                filenum = exists.to_i
+            end
+            puts "\e[32mGetting file #{filenum}\e[0m"
+            data = socket.gets.chomp
+            puts "\e[32mDecoding file #{filenum}\e[0m"
+            File.write 'tmp/.tmp', Base64.decode64(data)
         else
             if @fromrepo
                 FileUtils.cp "#{@index['local_pkg_repo']}/#{@file}", 'tmp/.tmp'
@@ -165,8 +203,8 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
         puts "Invalid function: #{func}"
         fail
     end
-end
 
-unless @problem.nil?
-    puts "\e[33;1mThere may be a problem:\n\n#{@problem}\e[0m"
+    unless @problem.nil?
+        puts "\e[33;1mThere may be a problem:\n\n#{@problem}\e[0m"
+    end
 end
