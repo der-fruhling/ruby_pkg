@@ -1,7 +1,7 @@
 # ruby_pkg
 *Ruby package manager.*  
 
-**You are at [usage.md](usage.md)**  
+**You are at [usage.md](usage)**  
 [*Go to index*](index.md)
 - - - - - - - - - - - - - - - - - -
 
