@@ -69,7 +69,7 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                     fail
                 end
             when 's'
-                unless @fromurl
+                unless @fromurl || @from_dedicated_server
                     puts 'Put -u before -s.'
                     fail
                 else
@@ -113,12 +113,10 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
             require 'socket'
             require 'base64'
             puts "\e[33;1mUsing experimental server!\e[0m"
-            unless @srv['dedicated_server'] == true
-                fail 'Invalid server. (NOT_DED_SERVER)'
-            end
-            socket = TCPSocket.new @srv
+            puts "\e[32mConnecting on #{@srv}:4876"
+            socket = TCPSocket.new @srv, 4876
             puts "\e[33;1mSeeing if package exists on server...\e[0m"
-            socket.puts "exists #{@file}"
+            socket.puts "exists #{@file}#{@usegz ? ' gz' : ''}"
             filenum = 0
             exists = socket.gets
             if exists == 'no'
@@ -127,7 +125,9 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                 filenum = exists.to_i
             end
             puts "\e[32mGetting file #{filenum}\e[0m"
+            socket.puts "get #{filenum}"
             data = socket.gets.chomp
+            socket.puts 'close'
             puts "\e[32mDecoding file #{filenum}\e[0m"
             File.write 'tmp/.tmp', Base64.decode64(data)
         else
