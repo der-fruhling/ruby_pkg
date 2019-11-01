@@ -35,7 +35,7 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
     @file = nil
     @fromrepo = false
 
-    argv[1..].each do |arg|
+    argv[1..(argv.size-1)].each do |arg|
         if arg.start_with? '-'
             a = arg[1]
             case a
@@ -51,7 +51,7 @@ http://liamcoal.github.io/ruby_pkg/easyhelp
                     puts 'Put -u before -s.'
                     fail
                 else
-                    @srv = @index['services'][arg[2..]]
+                    @srv = @index['services'][arg[2..(arg.size-1)]]
                 end
             when 'g'
                 @usegz = true
